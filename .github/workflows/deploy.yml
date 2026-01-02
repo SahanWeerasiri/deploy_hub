@@ -23,7 +23,7 @@ jobs:
                   ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
                     ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub && git pull origin main --no-rebase
+                  cd /home/ubuntu/deploy_hub && git pull origin master --no-rebase
 
                   echo "Pulled Deploy Hub repository."
 
@@ -79,7 +79,7 @@ jobs:
                   ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
                     ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && git pull origin main --no-rebase
+                  cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && git pull origin master --no-rebase
 
                   echo "Pulled Forest Portfolio repository."
 
