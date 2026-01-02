@@ -3,11 +3,9 @@
 FROM node:20-alpine as build
 WORKDIR /app/temporary-chatting/client
 COPY package*.json ./
-# Install pnpm
-RUN npm install -g pnpm
-RUN pnpm ci
+RUN npm ci
 COPY . .
-RUN pnpm run build
+RUN npm run build
 
 # Production stage (just static files, nginx handled by main proxy)
 FROM alpine:latest
