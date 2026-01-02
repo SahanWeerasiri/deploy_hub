@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./temporary-chatting/server
+    container_name: chat-api
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    volumes:
+      - ./temporary-chatting/server/src/data:/app/temporary-chatting/server/src/data
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  client:
+    build: ./temporary-chatting/client
+    container_name: chat-client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  forest-portfolio:
+    build: ./test_forest_portfolio_3js
+    container_name: forest-portfolio
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+networks:
+  chat-network:
+    driver: bridge
