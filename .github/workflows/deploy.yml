@@ -1,120 +1,120 @@
 name: Deploy Workflow
 on:
-    push:
-        branches:
-            - master
-    workflow_dispatch:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v2
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-            - name: Setup SSH
-              run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.DEPLOY_SSH_KEY }}" | base64 --decode > ~/.ssh/deploy_key
-                  chmod 600 ~/.ssh/deploy_key
-                  ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" | base64 --decode > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-            - name: Pull Deploy Hub
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      - name: Pull Deploy Hub
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub && git pull origin master --no-rebase
+          cd /home/ubuntu/deploy_hub && git pull origin master --no-rebase
 
-                  echo "Pulled Deploy Hub repository."
+          echo "Pulled Deploy Hub repository."
 
-                  EOF
+          EOF
 
-            - name: Pull Temporary Chatting
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      # - name: Pull Temporary Chatting
+      #   run: |
+      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting && git pull origin main --no-rebase
+      #       cd /home/ubuntu/deploy_hub/temporary-chatting && git pull origin main --no-rebase
 
-                  echo "Pulled Temporary Chatting repository."
+      #       echo "Pulled Temporary Chatting repository."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingClient.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/client/TemporaryChattingClient.Dockerfile
+      #       cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingClient.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/client/TemporaryChattingClient.Dockerfile
 
-                  echo "Copied TemporaryChattingClient.Dockerfile."
+      #       echo "Copied TemporaryChattingClient.Dockerfile."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingServer.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/server/TemporaryChattingServer.Dockerfile
+      #       cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingServer.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/server/TemporaryChattingServer.Dockerfile
 
-                  echo "Copied TemporaryChattingServer.Dockerfile."
+      #       echo "Copied TemporaryChattingServer.Dockerfile."
 
-                  EOF
+      #       EOF
 
-            - name: Build Docker Images for Temporary Chatting Client
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      # - name: Build Docker Images for Temporary Chatting Client
+      #   run: |
+      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  echo "Building Docker images for Temporary Chatting Client."
+      #       echo "Building Docker images for Temporary Chatting Client."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting/client && docker build -f TemporaryChattingClient.Dockerfile -t chat-client .
+      #       cd /home/ubuntu/deploy_hub/temporary-chatting/client && docker build -f TemporaryChattingClient.Dockerfile -t chat-client .
 
-                  echo "Built Docker images for Temporary Chatting Client."
+      #       echo "Built Docker images for Temporary Chatting Client."
 
-                  EOF
+      #       EOF
 
-            - name: Build Docker Images for Temporary Chatting Server
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      # - name: Build Docker Images for Temporary Chatting Server
+      #   run: |
+      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  echo "Building Docker images for Temporary Chatting Server."
+      #       echo "Building Docker images for Temporary Chatting Server."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting/server && docker build -f TemporaryChattingServer.Dockerfile -t chat-api .
+      #       cd /home/ubuntu/deploy_hub/temporary-chatting/server && docker build -f TemporaryChattingServer.Dockerfile -t chat-api .
 
-                  echo "Built Docker images for Temporary Chatting Server."
+      #       echo "Built Docker images for Temporary Chatting Server."
 
-                  EOF
+      #       EOF
 
-            - name: Pull Forest Portfolio
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      - name: Pull Forest Portfolio
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && git pull origin master --no-rebase
+          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && git pull origin master --no-rebase
 
-                  echo "Pulled Forest Portfolio repository."
+          echo "Pulled Forest Portfolio repository."
 
-                  cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && cp /home/ubuntu/deploy_hub/Docker/ForestPortfolio.Dockerfile /home/ubuntu/deploy_hub/test_forest_portfolio_3js/ForestPortfolio.Dockerfile
+          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && cp /home/ubuntu/deploy_hub/Docker/ForestPortfolio.Dockerfile /home/ubuntu/deploy_hub/test_forest_portfolio_3js/ForestPortfolio.Dockerfile
 
-                  echo "Copied ForestPortfolio.Dockerfile."
+          echo "Copied ForestPortfolio.Dockerfile."
 
-                  EOF
+          EOF
 
-            - name: Build Docker Images for Forest Portfolio
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      - name: Build Docker Images for Forest Portfolio
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  echo "Building Docker images for Forest Portfolio."
+          echo "Building Docker images for Forest Portfolio."
 
-                  cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && docker build -f ForestPortfolio.Dockerfile -t forest-portfolio .
+          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && docker build -f ForestPortfolio.Dockerfile -t forest-portfolio .
 
-                  echo "Built Docker images for Forest Portfolio."
+          echo "Built Docker images for Forest Portfolio."
 
-                  EOF
+          EOF
 
-            - name: Deploy with Docker Compose
-              run: |
-                  ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-                    ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      - name: Deploy with Docker Compose
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-                  cd /home/ubuntu/deploy_hub && docker-compose down
+          cd /home/ubuntu/deploy_hub && docker-compose down
 
-                  cd /home/ubuntu/deploy_hub && docker-compose up -d --build
+          cd /home/ubuntu/deploy_hub && docker-compose up -d --build
 
-                  echo "Deployed application with Docker Compose."
+          echo "Deployed application with Docker Compose."
 
-                  EOF
+          EOF
 
-            - name: Cleanup SSH Key
-              if: always()
-              run: rm -f ~/.ssh/deploy_key
+      - name: Cleanup SSH Key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
