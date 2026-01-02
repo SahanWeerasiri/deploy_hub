@@ -4,7 +4,8 @@ WORKDIR /app/temporary-chatting/server
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install pnpm and dependencies
+RUN npm install -g pnpm
 RUN pnpm ci
 
 # Copy source code

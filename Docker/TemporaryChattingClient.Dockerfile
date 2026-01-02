@@ -1,7 +1,10 @@
+
 # Build stage
 FROM node:20-alpine as build
 WORKDIR /app/temporary-chatting/client
 COPY package*.json ./
+# Install pnpm
+RUN npm install -g pnpm
 RUN pnpm ci
 COPY . .
 RUN pnpm run build
