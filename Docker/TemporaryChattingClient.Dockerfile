@@ -3,7 +3,7 @@
 FROM node:20-alpine as build
 WORKDIR /app/temporary-chatting/client
 COPY package*.json ./
-RUN npm install -g pnpm && pnpm ci
+RUN npm ci
 COPY . .
 RUN npm run build
 
