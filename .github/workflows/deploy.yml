@@ -54,7 +54,7 @@ jobs:
 
                   echo "Building Docker images for Temporary Chatting Client."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting/client && docker build -f TemporaryChattingClient.Dockerfile -t temporary-chatting-client .
+                  cd /home/ubuntu/deploy_hub/temporary-chatting/client && docker build -f TemporaryChattingClient.Dockerfile -t chat-client .
 
                   echo "Built Docker images for Temporary Chatting Client."
 
@@ -67,7 +67,7 @@ jobs:
 
                   echo "Building Docker images for Temporary Chatting Server."
 
-                  cd /home/ubuntu/deploy_hub/temporary-chatting/server && docker build -f TemporaryChattingServer.Dockerfile -t temporary-chatting-server .
+                  cd /home/ubuntu/deploy_hub/temporary-chatting/server && docker build -f TemporaryChattingServer.Dockerfile -t chat-api .
 
                   echo "Built Docker images for Temporary Chatting Server."
 
