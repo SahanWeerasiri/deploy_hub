@@ -29,61 +29,18 @@ jobs:
 
           EOF
 
-      # - name: Pull Temporary Chatting
-      #   run: |
-      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-      #       cd /home/ubuntu/deploy_hub/temporary-chatting && git pull origin main --no-rebase
-
-      #       echo "Pulled Temporary Chatting repository."
-
-      #       cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingClient.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/client/TemporaryChattingClient.Dockerfile
-
-      #       echo "Copied TemporaryChattingClient.Dockerfile."
-
-      #       cd /home/ubuntu/deploy_hub/temporary-chatting && cp /home/ubuntu/deploy_hub/Docker/TemporaryChattingServer.Dockerfile /home/ubuntu/deploy_hub/temporary-chatting/server/TemporaryChattingServer.Dockerfile
-
-      #       echo "Copied TemporaryChattingServer.Dockerfile."
-
-      #       EOF
-
-      # - name: Build Docker Images for Temporary Chatting Client
-      #   run: |
-      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-      #       echo "Building Docker images for Temporary Chatting Client."
-
-      #       cd /home/ubuntu/deploy_hub/temporary-chatting/client && docker build -f TemporaryChattingClient.Dockerfile -t chat-client .
-
-      #       echo "Built Docker images for Temporary Chatting Client."
-
-      #       EOF
-
-      # - name: Build Docker Images for Temporary Chatting Server
-      #   run: |
-      #       ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-      #         ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-      #       echo "Building Docker images for Temporary Chatting Server."
-
-      #       cd /home/ubuntu/deploy_hub/temporary-chatting/server && docker build -f TemporaryChattingServer.Dockerfile -t chat-api .
-
-      #       echo "Built Docker images for Temporary Chatting Server."
-
-      #       EOF
-
       - name: Pull Forest Portfolio
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && git pull origin master --no-rebase
+          mkdir -p /home/ubuntu/test_forest_portfolio_3js
+
+          cd /home/ubuntu/test_forest_portfolio_3js && git pull origin master --no-rebase
 
           echo "Pulled Forest Portfolio repository."
 
-          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && cp /home/ubuntu/deploy_hub/Docker/ForestPortfolio.Dockerfile /home/ubuntu/deploy_hub/test_forest_portfolio_3js/ForestPortfolio.Dockerfile
+          cd /home/ubuntu/test_forest_portfolio_3js && cp /home/ubuntu/deploy_hub/Docker/ForestPortfolio.Dockerfile /home/ubuntu/test_forest_portfolio_3js/ForestPortfolio.Dockerfile
 
           echo "Copied ForestPortfolio.Dockerfile."
 
@@ -96,7 +53,7 @@ jobs:
 
           echo "Building Docker images for Forest Portfolio."
 
-          cd /home/ubuntu/deploy_hub/test_forest_portfolio_3js && docker build -f ForestPortfolio.Dockerfile -t forest-portfolio .
+          cd /home/ubuntu/test_forest_portfolio_3js && docker build -f ForestPortfolio.Dockerfile -t forest-portfolio ../deploy_hub
 
           echo "Built Docker images for Forest Portfolio."
 
