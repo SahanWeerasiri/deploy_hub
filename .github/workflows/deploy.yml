@@ -4,6 +4,8 @@ on:
     branches:
       - master
   workflow_dispatch:
+  issues:
+    types: [opened]
 jobs:
   deploy:
     runs-on: ubuntu-latest
