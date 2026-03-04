@@ -29,33 +29,16 @@ jobs:
 
           EOF
 
-      - name: Pull Forest Portfolio
+      - name: Pull Forest Portfolio Docker Image
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
-          mkdir -p /home/ubuntu/test_forest_portfolio_3js
+          echo "Pulling Forest Portfolio Docker image."
 
-          cd /home/ubuntu/test_forest_portfolio_3js && git pull origin master --no-rebase
+          docker login
 
-          echo "Pulled Forest Portfolio repository."
-
-          cd /home/ubuntu/test_forest_portfolio_3js && cp /home/ubuntu/deploy_hub/Docker/ForestPortfolio.Dockerfile /home/ubuntu/test_forest_portfolio_3js/ForestPortfolio.Dockerfile
-
-          echo "Copied ForestPortfolio.Dockerfile."
-
-          EOF
-
-      - name: Build Docker Images for Forest Portfolio
-        run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-          echo "Building Docker images for Forest Portfolio."
-
-          cd /home/ubuntu/test_forest_portfolio_3js && docker build -f ForestPortfolio.Dockerfile -t forest-portfolio ../deploy_hub
-
-          echo "Built Docker images for Forest Portfolio."
+          docker pull sahanlahiru/sahan:forest
 
           EOF
 

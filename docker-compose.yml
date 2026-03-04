@@ -15,8 +15,8 @@ services:
     networks:
       - app-network
   forest-portfolio:
-    build: ./test_forest_portfolio_3js
-    container_name: forest-portfolio
+    image: sahanlahiru/sahan:forest
+    container_name: sahanlahiruforest
     restart: unless-stopped
     networks:
       - app-network
