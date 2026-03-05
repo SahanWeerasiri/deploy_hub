@@ -20,41 +20,24 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Pull Deploy Hub
+      - name: Pull and deploy
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
 
           cd /home/ubuntu/deploy_hub && git pull origin master --no-rebase
 
-          echo "Pulled Deploy Hub repository."
-
-          EOF
-
-      - name: Pull Forest Portfolio Docker Image
-        run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-          echo "Pulling Forest Portfolio Docker image."
-
+          cat > /home/ubuntu/deploy.sh << 'EOS'
+          #!/bin/bash
+          cd /home/ubuntu/deploy_hub
           docker login
-
           docker pull sahanlahiru/sahan:forest
-
-          EOF
-
-      - name: Deploy with Docker Compose
-        run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-
-          cd /home/ubuntu/deploy_hub && docker-compose down
-
-          cd /home/ubuntu/deploy_hub && docker-compose up -d --build
-
+          docker-compose down
+          docker-compose up -d --build
           echo "Deployed application with Docker Compose."
-
+          EOS
+          chmod +x /home/ubuntu/deploy.sh
+          nohup /home/ubuntu/deploy.sh > /home/ubuntu/deploy.log 2>&1 &
           EOF
 
       - name: Cleanup SSH Key
