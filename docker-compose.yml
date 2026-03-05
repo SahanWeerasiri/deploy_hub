@@ -17,6 +17,24 @@ services:
     networks:
       - app-network
 
+  chat-server:
+    image: sahanlahiru/sahan:chat-server
+    container_name: chat-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+  chat-client:
+    image: sahanlahiru/sahan:chat-client
+    container_name: chat-client
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
